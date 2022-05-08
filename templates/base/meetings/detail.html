@@ -1,0 +1,125 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block title %}{{meeting.title}}{% endblock %}
+{% block content %}
+<div class="container-fluid ">
+    <!--Form Modal -->
+    <div class="modal modal-blue fade bs-modal-lg-blue" id="updateMeetingModal" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Update Meeting</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="modal-body">
+                    <form action="" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{meeting_form|crispy}}
+                        </div>
+                        <div class="text-center mr-b-30">
+                            <button class="btn btn-rounded btn-success ripple" type="submit">Add Minutes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal -->
+    <!-- Minutes Form Modal -->
+    <div class="modal modal-blue fade bs-modal-lg-blue" id="minutesModal" tabindex="-1" role="dialog"
+        aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog  modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Create Minutes</h5>
+                    <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">X</button>
+                </div>
+                <div class="modal-body">
+                    <form action="{% url 'minutes_form' meeting.pk %}" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            {{form|crispy}}
+                        </div>
+                        <div class="text-center mr-b-30">
+                            <button class="btn btn-rounded btn-success ripple" type="submit">Add Minutes</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- End Modal -->
+
+    <div class="row page-title clearfix">
+        <div class="page-title-left">
+            <h6 class="page-title-heading mr-0 mr-r-5">Scheduled Meetings</h6>
+            <p class="page-title-description mr-0 d-none d-md-inline-block">My meetings</p>
+        </div>
+        <!-- /.page-title-left -->
+        <div class="page-title-right d-none d-sm-inline-flex">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="/">Dashboard</a>
+                </li>
+                <li class="breadcrumb-item active">Schedule Meetings</li>
+                <li class="breadcrumb-item active">{{meeting.title}}</li>
+            </ol>
+        </div>
+        <!-- /.page-title-right -->
+    </div>
+    <!-- /.page-title -->
+    {% include 'includes/messages.html' %}
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8">
+                <div class="form-group">{% if request.user.is_staff %}
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#updateMeetingModal" class="btn btn-dark btn-sm">Update Meeting</a>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#minutesModal" class="btn btn-dark btn-sm">Create
+                        Minutes</a>
+                    
+                    <!-- <a href="#" data-bs-toggle="modal" data-bs-target="#packsModal" class="btn btn-dark btn-sm">Add
+                        Files</a>-->
+                    {% endif %}
+                    {% if minutes %}
+                    <a href="{{minutes.get_absolute_url}}" class="btn btn-dark btn-sm">View Minutes</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="container-fluid">
+        <div class="widget-list row">
+            <div class="col-lg-8 widget-holder">
+                <div class="widget-bg">
+                    <div class="widget-body clearfix">
+                        <h4 class="text-center">{{meeting.agenda}}</h4>
+                    </div>
+                    <div class="alert alert-light">
+                        <p class="text-muted"><strong>By {{meeting.owner}}</strong></p>
+                        <p class="text-muted">Duration: {{meeting.estimated_period}}</p>
+                        <p class="text-muted">Date: {{meeting.start_time|date}} Time: {{meeting.start_time|time}}
+                        </p>
+                        <p class="text-muted">{{meeting.description|safe}}</p>
+                        <hr />
+                        <!-- RSVP -->
+                        {% if meeting.start_time >= meeting.start_time.now %}
+                        
+                        <hr />
+                        <form id="form">
+                            <div class="field-wrapper">                        
+                                <button type="submit" class="btn btn-sm px-3 btn-rounded btn-success text-uppercase fw-600 fs-11">
+                                    Join Meeting
+                                </button>
+                            </div>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} {% block javascript %}
+{% endblock javascript %}

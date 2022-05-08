@@ -1,0 +1,167 @@
+{% extends 'base.html' %} {% load static %} {% load crispy_forms_tags %} {% block title %}Contact List{% endblock %} {% block content %}
+<div class="container-fluid">
+  <!--Form Modal -->
+  <div
+    class="modal modal-blue fade bs-modal-lg-blue"
+    id="memberModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Add Member</h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            X
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST">
+            {% csrf_token %}
+            <div class="form-group">{{form|crispy}}</div>
+            <div class="text-center mr-b-30">
+              <button class="btn btn-rounded btn-success ripple" type="submit">
+                Add member
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+  <!--Edit Form Modal -->
+  <div
+    class="modal modal-blue fade bs-modal-lg-blue"
+    id="editMemberModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Edit Member Details</h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            X
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST">
+            {% csrf_token %}
+            <div class="form-group">{{form|crispy}}</div>
+            <div class="text-center mr-b-30">
+              <button class="btn btn-rounded btn-success ripple" type="submit">
+                save details
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+
+
+
+  <div class="row page-title clearfix">
+    <div class="page-title-left">
+      <h6 class="page-title-heading mr-0 mr-r-5">Contacts</h6>
+      <p class="page-title-description mr-0 d-none d-md-inline-block">
+        members list
+      </p>
+    </div>
+    <!-- /.page-title-left -->
+    <div class="page-title-right d-none d-sm-inline-flex">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+          <a href="{% url 'dashboard' %}">Dashnoard</a>
+        </li>
+        <li class="breadcrumb-item active">Members</li>
+      </ol>
+    </div>
+    <!-- /.page-title-right -->
+  </div>
+  <!-- /.page-title -->
+  {% include 'includes/messages.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-3 col-sm-6 col-12 mr-b-20">
+        <div class="form-group">
+          <a
+            href="#"
+            data-bs-toggle="modal"
+            data-bs-target="#memberModal"
+            class="btn btn-dark btn-sm"
+            >Add member</a
+          >
+          <a href="" class="btn btn-success btn-sm" target="_blank"
+            >Export List</a
+          >
+        </div>
+      </div>
+      <div class="col-md-4 mb-4"></div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-lg-12 widget-holder widget-full-height widget-flex">
+      <div class="widget-bg">
+        <div class="widget-body clearfix"></div>
+        <div class="alert alert-light">
+          <table class="table table-responsize mail-list contact-list">
+            <tbody class="table-hover">
+              <tr>
+                <td class="contact-list-name">ID</td>
+                <td class="contact-list-name">Full Names</td>
+                <td class="contact-list-name">Phone number</td>
+                <td class="contact-list-name">Email</td>
+                <td class="contact-list-name"></td>
+              </tr>
+              {% for user in user_obj %}
+              <tr>
+                <td class="contact-list-user d-none d-md-block">
+                  <a href="#" class="d-block fw-semibold"
+                    >{{user.id}}</a
+                  >
+                </td>
+                <td class="contact-list-name">
+                  <a href="#" class="d-block fw-semibold"
+                    >{{user.first_name}} {{user.last_name}}</a
+                  >
+                </td>
+                <td class="contact-list-message">
+                  <span class="contact-list-phone d-block">{{user.phone}}</span>
+                </td>
+                <td class="contact-list-message">
+                  <span class="contact-list-phone d-block">{{user.email}}</span>
+                </td>
+                <td class="contact-list-message">
+                    <a
+                    href="#"
+                    data-bs-toggle="modal"
+                    data-bs-target="#editMemberModal"
+                    class="btn btn-info btn-xs"
+                    >Edit member</a
+                  >
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

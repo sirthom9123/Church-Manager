@@ -1,0 +1,97 @@
+{% if page_obj %}
+<nav aria-label="Page navigation">
+    <div class="title text-muted">
+        Showing page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+    </div>
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+        <li {% if page_obj.number == 1 %} class="page-item active" {% endif %}>
+            <a class="page-link" href="?page=1">1</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.previous_page_number }}"
+                aria-label="Previous"><span aria-hidden="true"><i class="feather feather-chevron-left"></i></span></a>
+        </li>
+        {% endif %}
+
+        {% if page_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next"><span
+                    aria-hidden="true"><i class="feather feather-chevron-right"></i></span></a></li>
+        <li class="page-item active">
+            <a class="page-link" href="?page=1">{{ page_obj.paginator.num_pages}}</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% elif page_doc_obj %}
+<nav aria-label="Page navigation">
+    <div class="title text-muted">
+        Showing page {{ page_doc_obj.number }} of {{ page_doc_obj.paginator.num_pages }}
+    </div>
+    <ul class="pagination">
+        {% if page_doc_obj.has_previous %}
+        <li {% if page_doc_obj.number == 1 %} class="page-item active" {% endif %}>
+            <a class="page-link" href="?page=1">1</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="?page={{ page_doc_obj.previous_page_number }}"
+                aria-label="Previous"><span aria-hidden="true"><i class="feather feather-chevron-left"></i></span></a>
+        </li>
+        {% endif %}
+
+        {% if page_doc_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ page_doc_obj.next_page_number }}"
+                aria-label="Next"><span aria-hidden="true"><i class="feather feather-chevron-right"></i></span></a></li>
+        <li class="page-item active">
+            <a class="page-link" href="?page=1">{{ page_doc_obj.paginator.num_pages}}</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% elif drop_obj %}
+<nav aria-label="Page navigation">
+    <div class="title text-muted">
+        Showing page {{ drop_obj.number }} of {{ drop_obj.paginator.num_pages }}
+    </div>
+    <ul class="pagination">
+        {% if drop_obj.has_previous %}
+        <li {% if drop_obj.number == 1 %} class="page-item active" {% endif %}>
+            <a class="page-link" href="?page=1">1</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="?page={{ drop_obj.previous_page_number }}"
+                aria-label="Previous"><span aria-hidden="true"><i class="feather feather-chevron-left"></i></span></a>
+        </li>
+        {% endif %}
+
+        {% if drop_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ drop_obj.next_page_number }}" aria-label="Next"><span
+                    aria-hidden="true"><i class="feather feather-chevron-right"></i></span></a></li>
+        <li class="page-item active">
+            <a class="page-link" href="?page=1">{{ drop_obj.paginator.num_pages}}</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% elif drop_group_obj %}
+<nav aria-label="Page navigation">
+    <div class="title text-muted">
+        Showing page {{ drop_group_obj.number }} of {{ drop_group_obj.paginator.num_pages }}
+    </div>
+    <ul class="pagination">
+        {% if drop_group_obj.has_previous %}
+        <li {% if drop_group_obj.number == 1 %} class="page-item active" {% endif %}>
+            <a class="page-link" href="?page=1">1</a>
+        </li>
+        <li class="page-item"><a class="page-link" href="?page={{ drop_group_obj.previous_page_number }}"
+                aria-label="Previous"><span aria-hidden="true"><i class="feather feather-chevron-left"></i></span></a>
+        </li>
+        {% endif %}
+
+        {% if drop_group_obj.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{ drop_group_obj.next_page_number }}"
+                aria-label="Next"><span aria-hidden="true"><i class="feather feather-chevron-right"></i></span></a></li>
+        <li class="page-item active">
+            <a class="page-link" href="?page=1">{{ drop_group_obj.paginator.num_pages}}</a>
+        </li>
+        {% endif %}
+    </ul>
+</nav>
+{% endif %}

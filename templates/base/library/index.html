@@ -1,0 +1,153 @@
+{% extends 'base.html' %} {% load static %} {% load crispy_forms_tags %} {% block title %}Document Library{% endblock %} {% block scripts %}
+<style type="text/css">
+  #id_user > div {
+    max-height: 150px;
+    overflow-y: scroll;
+    border: 2px solid rgb(158, 158, 158);
+    padding: 10px;
+    border-radius: 5px;
+    list-style-type: none;
+  }
+</style>
+{% endblock scripts %} {% block content %}
+<div class="container-fluid">
+  
+  <!--Form Modal -->
+  <div
+    class="modal fade"
+    id="uploadModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Upload Files</h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            X
+          </button>
+        </div>
+        <div class="modal-body">
+          <form
+            action="{% url 'upload_file_form' %}"
+            method="post"
+            enctype="multipart/form-data"
+          >
+            {% csrf_token %}
+            <div class="form-group">{{form|crispy}}</div>
+            <div class="form-group">{{file_form|crispy}}</div>
+            <div class="text-center mr-b-30">
+              <button class="btn btn-rounded btn-success ripple" type="submit">
+                Add Document(s)
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+  <div class="row page-title clearfix">
+    <div class="page-title-left">
+      <h6 class="page-title-heading mr-0 mr-r-5">Document Library</h6>
+      <p class="page-title-description mr-0 d-none d-md-inline-block">
+        documents, archives
+      </p>
+    </div>
+    <!-- /.page-title-left -->
+    <div class="page-title-right d-none d-sm-inline-flex">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Library</li>
+      </ol>
+    </div>
+    <!-- /.page-title-right -->
+  </div>
+  <!-- /.page-title -->
+  {% include 'includes/messages.html' %}
+
+  <div class="container-fluid">
+    <div class="widget-list row">
+      <div class="col-md-8">
+        {% if request.user.is_staff %}
+        <a
+          href="#"
+          class="btn btn-danger btn-sm"
+          data-bs-toggle="modal"
+          data-bs-target="#uploadModal"
+          >Upload New File</a
+        >&nbsp;{% endif %}
+      </div>
+      <div class="col-lg-4">
+        <div class="form-group">
+          <form action="" class="form-group" method="GET">
+            {{ filters.form.title }}
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="row mt-3 mb-4">
+      <div class="col-md-12">
+        {% if category.slug %}
+        <div class="page-title">
+          <div class="container">
+            <h2>Files under "{{category.name}}"</h2>
+          </div>
+        </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+  <div class="widgte-list row">
+    <div class="col-lg-4 widget-holder">
+      <ul class="list-group">
+        {% for cat in categories %}
+        <li
+          class="list-group-item list-group-item-action d-flex justify-content-end"
+        >
+          <a
+            href="{% url 'file_list_by_category' cat.slug %}"
+            class="mr-auto mr-0-rtl ml-auto-rtl"
+            >{{cat.name}}</a
+          >
+        </li>
+        {% if not forloop.last %} {% endif %}{% endfor %}
+      </ul>
+    </div>
+    <div class="col-lg-8 widget-holder">
+      {% if page_obj %}
+      <div class="widget-bg">
+        {% for file in page_obj %}
+        <div class="alert alert-light">
+            <h5>{{file.title}}</h5>
+            <p class="card-muted">{{file.desc}}</p>
+            <p><strong>Attachments</strong></p>
+            {% for f in file.files_field.all %}
+            <a href="{{f.file_field.url}}"
+                class="btn btn-sm px-3 btn-rounded btn-info text-uppercase fw-600 fs-11"
+                target="_blank">Open document</a>
+            {% endfor %}
+            {% if request.user.is_staff %}
+            <hr />
+            <a href="{% url 'delete_file' file.pk %}"
+                class="btn btn-sm px-3 btn-rounded btn-danger text-uppercase fw-600 fs-11">Delete</a>
+            {% endif %}
+        </div>
+        <hr />
+        {% endfor %}
+      </div>
+      {% else %}
+      <h5>No files shared.</h5>
+      {% endif %}
+      <br />
+      {% include 'includes/pagination.html' %}
+    </div>
+  </div>
+</div>
+{% endblock content %}

@@ -1,0 +1,219 @@
+{% extends 'base.html' %} {% load static %} {% load crispy_forms_tags %} {% block title %}Financials Income{% endblock %} {% block scripts %}
+<style type="text/css">
+  #id_invitees > ul {
+    max-height: 150px;
+    overflow-y: scroll;
+    border: 2px solid rgb(158, 158, 158);
+    padding: 10px;
+    border-radius: 5px;
+  }
+</style>
+{% endblock scripts %} {% block content %}
+<div class="container-fluid">
+  <!--Form Modal -->
+  <div
+    class="modal modal-blue fade bs-modal-lg-blue"
+    id="meetingModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create Record</h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            X
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'financial_form' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+              {{form|crispy}}
+            </div>
+            <div class="text-center mr-b-30">
+              <button class="btn btn-rounded btn-success ripple" type="submit">
+                Add Record
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+  <div class="row page-title clearfix">
+    <div class="page-title-left">
+      <h6 class="page-title-heading mr-0 mr-r-5">Financials</h6>
+      <p class="page-title-description mr-0 d-none d-md-inline-block">
+        Financial Income
+      </p>
+    </div>
+    <!-- /.page-title-left -->
+    <div class="page-title-right d-none d-sm-inline-flex">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Income</li>
+      </ol>
+    </div>
+    <!-- /.page-title-right -->
+  </div>
+  <!-- /.page-title -->
+  {% include 'includes/messages.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-sm-6 col-12 mr-b-20">
+        {% if request.user.is_staff %}
+        <div class="form-group">
+          <a
+            href="#"
+            data-bs-toggle="modal"
+            data-bs-target="#meetingModal"
+            class="btn btn-dark btn-sm"
+            >Create entry</a
+          >
+          <a href="" class="btn btn-success btn-sm" target="_blank">Export List</a>
+        </div>
+        {% endif %}
+      </div>
+      <div class="col-lg-4">
+        <div class="form-group">
+            <input type="text" class="form-control" id="searchField" placeholder="Search">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Widget for graph stats -->
+  <div class="widget-list row"></div>
+
+  <!-- Widget for list -->
+  <div class="row">
+    <div class="col-lg-12 widget-holder widget-full-height widget-flex">
+      {% if fin %}
+      <div class="widget-bg">
+        <div class="widget-body clearfix">
+          {% with fin.count as total_finanacials %}
+          <h5 class="box-title mr-b-0">
+            {{ total_finanacials }} Record{{ total_finanacials|pluralize }}
+          </h5>
+          {% endwith %}
+        </div>
+        <div class="alert alert-light app-table">
+            <table class="table table-responsize mail-list contact-list">
+                <tbody class="table-hover">
+                    <tr>
+                        <td class="contact-list-name">Entity</td>
+                        <td class="contact-list-name">Project</td>
+                        <td class="contact-list-name">Profile</td>
+                        <td class="contact-list-name">Amount</td>
+                        <td class="contact-list-name">Contact</td>
+                        <td class="contact-list-name">Date</td>
+                    </tr>
+                    {% for item in fin %}
+                    <tr>
+                        <td class="contact-list-name">
+                            <span
+                            class="contact-list-phone d-block ">
+                            {{item.entity.name}}
+                            </span>
+                        </td>
+                        <td class="contact-list-name">
+                            <span
+                            class="contact-list-phone d-block ">
+                            {% if item.project %}{{item.project}}{% else %}-{% endif %}
+                            </span>
+                        </td>
+                        <td class="contact-list-name">
+                            <span
+                            class="contact-list-phone d-block ">
+                            {{item.profile}}
+                            </span>
+                        </td>
+                        <td class="contact-list-name">
+                            <span
+                            class="contact-list-phone d-block ">
+                            {{item.amount}}
+                            </span>
+                        </td>
+                        <td class="contact-list-name">
+                            <span
+                            class="contact-list-phone d-block ">
+                            {{item.contact.id}}
+                            </span>
+                        </td>
+                        <td class="contact-list-name">
+                            <span
+                            class="contact-list-phone d-block ">
+                            {{item.upload_date|date}}
+                            </span>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+      </div>
+      {% else %}
+      <div class="alert alert-light">
+        <a
+          href=""
+          class="text-center"
+          style="text-decoration: none; color: #dc3545"
+          >No data avaliable</a
+        >
+      
+      </div>
+      {% endif %}
+    </div>
+
+    <p class="no-results" style="display: none;">No results </p>
+    <div class="alert alert-light table-output">
+        <table class="table table-responsize mail-list contact-list ">
+            <thead>
+                <tr>
+                    <td class="contact-list-name">Entity</td>
+                    <td class="contact-list-name">Project</td>
+                    <td class="contact-list-name">Profile</td>
+                    <td class="contact-list-name">Amount</td>
+                    <td class="contact-list-name">Contact</td>
+                    <td class="contact-list-name">Date</td>
+            </tr>
+          </thead>
+  
+          <tbody class="table-body">
+  
+  
+          </tbody>
+        </table>
+      </div>
+
+      <div class="pagination-container">
+        <div class="">
+          Showing page {{page_obj.number}} of {{ page_obj.paginator.num_pages }}
+        </div>
+        <ul class="pagination align-right float-right mr-auto">
+          {% if page_obj.has_previous %}
+          <li {% if page_obj.number == 1 %} class="page-item active" {% endif %}><a class="page-link" href="?page=1">&laquo; 1</a></li>
+          <li class="page-item"> <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a></li>
+          {% endif %}
+    
+          {% if page_obj.has_next %}
+          <li class="page-item"> <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a></li>
+          <li class="page-item"> <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}">{{ page_obj.paginator.num_pages}} &raquo;</a></li>
+          {% endif %}
+    
+    
+          </ul>
+      </div>
+  </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script src="{% static 'js/searchFinancials.js' %}"></script> 
+{% endblock javascript %}

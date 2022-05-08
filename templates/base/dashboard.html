@@ -1,0 +1,444 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Dashboard{% endblock %} {% block content %}
+<div class="container-fluid">
+  <!--Form Modal -->
+  <div
+    class="modal fade"
+    id="taskModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+    style="display: none"
+    s
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="box-title">Create Task</h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-hidden="Close"
+          >
+            X
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="title">Title</label>
+              {{form.title}}
+            </div>
+            <div class="form-group">
+              <label for="deadline">Duration</label>
+              {{form.deadline}}
+            </div>
+            <div class="form-group mr-b-30">
+              <label for="description">Description</label>
+              {{form.description}}
+            </div>
+            <div class="text-center mr-b-30">
+              <button class="btn btn-rounded btn-success ripple" type="submit">
+                Add Task
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+
+  <!--Poll Modal -->
+  <div
+    class="modal fade"
+    id="pollModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="box-title">Create Poll</h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            X
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="question">Enter Poll Question</label>
+              {{poll_form.question}}
+            </div>
+            <div class="form-group">
+              <label for="question">Description:</label>
+              {{poll_form.description}}
+            </div>
+            <div class="form-group">
+              <label for="question">For:</label>
+              {{poll_form.group}}
+            </div>
+            <div class="form-group">
+              <label for="question">Deadline:</label>
+              {{poll_form.deadline}}
+            </div>
+            <div class="form-group">
+              <label for="option1">Option 1</label>
+              {{poll_form.option_one}}
+            </div>
+            <div class="form-group">
+              <label for="option2">Option 2</label>
+              {{poll_form.option_two}}
+            </div>
+            <div class="form-group">
+              <label for="option3">Option 3</label>
+              {{poll_form.option_three}}
+            </div>
+            <div class="text-center mr-b-30">
+              <button class="btn btn-rounded btn-success ripple" type="submit">
+                Add Poll
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Poll Modal -->
+
+  <div class="row page-title clearfix">
+    <div class="page-title-left">
+      <h6 class="page-title-heading mr-0 mr-r-5">Dashboard</h6>
+      <p class="page-title-description mr-0 d-none d-md-inline-block">
+        entities, meetings, projects, documents, events
+      </p>
+    </div>
+    <!-- /.page-title-left -->
+    <div class="page-title-right d-none d-sm-inline-flex">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Home</li>
+      </ol>
+    </div>
+    <!-- /.page-title-right -->
+  </div>
+  <!-- /.page-title -->
+  {% include 'includes/messages.html' %}
+  <div class="page-title text-center">
+    <h4>Activity List</h4>
+  </div>
+  <div class="row">
+    {% for item in fin %}
+    <div class="widget-holder widget-full-height widget-flex col-lg-6">
+      <div class="widget-bg">
+        <div class="widget-heading">
+          <h3 class="widget-title">{{item.entity.name}}</h3>
+        </div>
+        {% if item %}
+        <div class="custom-scroll-content scrollbar-enabled">
+          <div class="alert alert-light">
+            {% if item.project %}
+            <h6 class="box-title mr-b-0">Project: {{item.project}}</h6>
+            <br />
+            {% else %}
+            <p class="text-muted"></p>
+            {% endif %}
+            <p class="text-muted">Profile: {{item.profile}}</p>
+            <p class="text-muted">Amount: {{item.amount}}</p>
+            <p class="text-muted">Contact: {{item.contact}}</p>
+            <p class="text-muted">Date: {{item.upload_date|date}}</p>
+            
+            <hr />
+          </div>
+        </div>
+
+        {% else %}
+        <div class="alert alert-light">
+          <a
+            href=""
+            class="text-center"
+            style="text-decoration: none; color: #dc3545"
+            >No data avaliable</a
+          >
+        </div>
+        {% endif %}
+        <div class="widget-todo">
+          <a
+            href="{% url 'financial_list' %}"
+            class="add-btn btn btn-circle btn-md fs-20 btn-primary"
+            ><i class="material-icons">exit_to_app</i></a
+          >
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <hr class="mt-4 mb-4" />
+  <div class="row">
+    <div class="widget-holder widget-full-height widget-flex col-md-6">
+      <div class="widget-bg">
+        <div class="widget-heading">
+          <h5 class="widget-title">Upcoming Meetings</h5>
+        </div>
+        <!-- /.widget-actions -->
+        <div class="widget-body">
+          <div class="widget-todo">
+            <div class="custom-scroll-content scrollbar-enabled">
+              {% if assigned %} {% for item in assigned %}
+              <div class="single media">
+                <i class="single-icon material-icons color-primary"
+                  >radio_button_unchecked</i
+                >
+                <div class="media-body">
+                  <div class="text-muted heading-font-family fw-500">
+                    Due: {{item.deadline|date}} {{item.deadline|time}}
+                  </div>
+                  <h6 class="single-title">{{item.title}}</h6>
+                  <p class="fw-400 fs-13 mb-0 text-muted">
+                    <i class="align-bottom material-icons md-18"> apps</i
+                    >{{item.description}}
+                  </p>
+                  {% if request.user.is_staff %}
+                  <p class="fw-400 fs-13 mb-0 text-muted">
+                    Assigned to: {{item.user_to.first_name}}
+                  </p>
+                  {% endif %}
+                </div>
+                <div class="dropdown align-self-center">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                    ><i class="material-icons">more_vert</i></a
+                  >
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <form
+                      action="{% url 'assigned_task_complete' item.id %}"
+                      method="POST"
+                      class="form-group"
+                    >
+                      {% csrf_token %}
+                      <button type="submit" class="dropdown-item">Done</button>
+                    </form>
+                    <div class="dropdown-divider"></div>
+                    {% if request.user.is_staff %}
+                    <form
+                      action="{% url 'assigned_task_delete' item.id %}"
+                      method="POST"
+                      class="form-group"
+                    >
+                      {% csrf_token %}
+                      <button type="submit" class="dropdown-item">
+                        Delete
+                      </button>
+                    </form>
+                    {% endif %}
+                  </div>
+                  <!-- /.dropdown-menu -->
+                </div>
+              </div>
+              {% endfor %} {% else %}
+              <div class="alert alert-light">
+                <a
+                  href=""
+                  class="text-center"
+                  style="text-decoration: none; color: #dc3545"
+                  >You don't have any meetings.
+                </a>
+              </div>
+              {% endif%}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="widget-holder widget-full-height widget-flex col-lg-6">
+      <div class="widget-bg">
+        <div class="widget-heading">
+          <h5 class="widget-title">Projects</h5>
+        </div>
+        <!-- /.widget-heading -->
+        <div class="widget-body">
+          <div class="widget-todo">
+            <div class="custom-scroll-content scrollbar-enabled">
+              {% if projects %} {% for item in projects %}
+              <div class="single media">
+                <i class="single-icon material-icons color-primary"
+                  >radio_button_unchecked</i
+                >
+                <div class="media-body">
+                  <div class="text-muted heading-font-family fw-500">
+                    {{item.title}} Project
+                  </div>
+                  <h6 class="single-title">{{item.entity}}</h6>
+                  <h6 class="single-title">Duration: 
+                  <p class="fw-400 fs-13 mb-0 text-muted">{{item.start_date|date}} - {{item.end_date|date}}</p></h6>
+                  <p class="fw-400 fs-13 mb-0 text-muted">
+                    <i class="align-bottom material-icons md-18"> apps</i
+                    >{{item.description}}
+                  </p>
+                </div>
+                <!-- /.media-body -->
+                <div class="dropdown align-self-center">
+                  <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                    ><i class="material-icons">more_vert</i></a
+                  >
+                  <div class="dropdown-menu dropdown-menu-right">
+                    <form
+                      action=""
+                      method="POST"
+                      class="form-group"
+                    >
+                      {% csrf_token %}
+                      <button type="submit" class="dropdown-item">Done</button>
+                    </form>
+                    <div class="dropdown-divider"></div>
+                    <form
+                      action=""
+                      method="POST"
+                      class="form-group"
+                    >
+                      {% csrf_token %}
+                      <button type="submit" class="dropdown-item">
+                        Delete
+                      </button>
+                    </form>
+                  </div>
+                  <!-- /.dropdown-menu -->
+                </div>
+                <!-- /.dropdown -->
+              </div>
+              {% endfor %} {% else %}
+              <div class="alert alert-light">
+                <a
+                  href=""
+                  class="text-center"
+                  style="text-decoration: none; color: #dc3545"
+                  >You don't have any projects</a
+                >
+              </div>
+              {% endif %}
+            </div>
+            <!-- /.single -->
+            <a
+              href="#"
+              class="add-btn btn btn-circle btn-md fs-20 btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#taskModal"
+              class="btn btn-primary"
+              ><i class="material-icons">add</i></a
+            >
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <hr class="mt-4 mb-4" />
+  <div class="row">
+    <div class="col-lg-6 widget-holder">
+      <div class="widget-bg">
+        <div class="widget-body clearfix">
+          <h5 class="box-title mr-b-0">Document Library</h5>
+        </div>
+        {% if object_list %}
+        <div class="custom-scroll-content scrollbar-enabled">
+          {% for file in object_list %}
+          <div class="alert alert-light">
+            <h6 class="box-title mr-b-0">{{file.title}}</h6>
+            <p class="text-muted">{{file.category}}</p>
+            <a
+              href=""
+              class="btn btn-sm px-3 btn-rounded btn-success text-uppercase fw-600 fs-11"
+              >Read More</a
+            >
+            <hr />
+          </div>
+          {% endfor %}
+        </div>
+        {% elif docu_object %}
+        <div class="custom-scroll-content scrollbar-enabled">
+          {% for file in docu_object %}
+          <div class="alert alert-light">
+            <h6 class="box-title mr-b-0">{{file.title}}</h6>
+            <p class="text-muted">{{file.category}}</p>
+            <a
+              href=""
+              class="btn btn-sm px-3 btn-rounded btn-success text-uppercase fw-600 fs-11"
+              >Read More</a
+            >
+            <hr />
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="alert alert-light">
+          <a
+            href=""
+            class="text-center"
+            style="text-decoration: none; color: #dc3545"
+            >No Documents avaliable</a
+          >
+        </div>
+        {% endif %}
+        <div class="widget-todo">
+          <a href="" class="add-btn btn btn-circle btn-md fs-20 btn-primary"
+            ><i class="material-icons">open_in_new</i></a
+          >
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-6 widget-holder">
+      <div class="widget-bg">
+        <div class="widget-body clearfix">
+          <h5 class="box-title mr-b-0">Events</h5>
+        </div>
+        {% if polls %}
+        <div class="custom-scroll-content scrollbar-enabled">
+          {% for item in polls %}
+          <div class="alert alert-light">
+            <h6 class="box-title mr-b-0">{{item.question}}</h6>
+            <br />
+            <div class="widget-todo">
+              <a
+                href=""
+                class="btn btn-sm px-3 btn-rounded btn-success text-uppercase fw-600 fs-11"
+                >Vote</a
+              >
+            </div>
+            <hr />
+          </div>
+          {% endfor %}
+        </div>
+        {% elif poll %}
+        <div class="custom-scroll-content scrollbar-enabled">
+          {% for item in poll %}
+          <div class="alert alert-light">
+            <h6 class="box-title mr-b-0">{{item.question}}</h6>
+            <br />
+            <div class="widget-todo">
+              <a
+                href=""
+                class="btn btn-sm px-3 btn-rounded btn-success text-uppercase fw-600 fs-11"
+                >Vote</a
+              >
+            </div>
+            <hr />
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        <div class="widget-todo">
+          <a href="" class="add-btn btn btn-circle btn-md fs-20 btn-primary"
+            ><i class="material-icons">open_in_new</i></a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock content %}

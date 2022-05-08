@@ -1,0 +1,72 @@
+{% load static %}
+<!-- SIDEBAR -->
+<aside class="site-sidebar scrollbar-enabled" data-suppress-scroll-x="true">
+  <!-- User Details -->
+  <div class="side-user">
+    <figure class="side-user-bg" style="background-image: url({% static 'img/user-image-cropped.jpg' %})">
+      <img src="{% static 'img/user-image-cropped.jpg' %}" alt="user background" class="d-none">
+    </figure>
+    <div class="col-sm-12 text-center p-0 clearfix">
+      <div class="d-inline-block pos-relative mr-b-10"><span class="avatar-text"></span>
+        <figure class="avatar-img thumb-sm mr-b-0 d-none">
+          <img src="{{request.user.profile.avatar.url}}" class="rounded-circle" alt="{{request.user.first_name}}">
+        </figure>
+      </div>
+      <!-- /.d-inline-block -->
+      <div class="lh-14 mr-t-5 sidebar-collapse-hidden">
+        <h6 class="hide-menu side-user-heading">{{request.user.first_name}}</h6><small
+          class="hide-menu">{{request.user.last_name}}</small>
+      </div>
+    </div>
+    <!-- /.col-sm-12 -->
+  </div>
+  <!-- /.side-user -->
+  <!-- Sidebar Menu -->
+  <nav class="sidebar-nav">
+    <ul class="nav in side-menu">
+      <li class="menu-item current-page active"><a href="{% url 'dashboard' %}"><i
+            class="list-icon material-icons">home</i>
+          <span class="hide-menu">Dashboard</span></a>
+      </li>
+      <li class="menu-item-has-children"><a href="javascript:void(0);"><i class="list-icon material-icons">money</i>
+        <span class="hide-menu">Finance</span></a>
+      <ul class="list-unstyled sub-menu">
+        <li><a href="{% url 'financial_list' %}">Income</a>
+        <li><a href="{% url 'expense_list' %}">Expenses</a>
+        <li><a href="{% url 'expense_list' %}">Income vs Expenses</a>
+        </li>
+      </ul>
+    </li>
+      <li class="menu-item-has-children"><a href="javascript:void(0);"><i class="list-icon material-icons">event</i>
+          <span class="hide-menu">Calendar</span></a>
+        <ul class="list-unstyled sub-menu">
+          <li><a href="{% url 'meeting_list' %}">Scheduled Meetings</a>
+          </li>
+          <li><a href="{% url 'events' %}">Newsletters</a>
+          </li>
+        </ul>
+      </li>
+      <li class="menu-item-has-children"><a href="javascript:void(0);"><i class="list-icon material-icons">inbox</i>
+          <span class="hide-menu">Documents</span></a>
+        <ul class="list-unstyled sub-menu">
+          <li class="menu-item"><a href="{% url 'library' %}">Library</a>
+          </li>
+        </ul>
+      </li>
+      <li class="menu-item"><a href="{% url 'project_list' %}"><i class="list-icon material-icons">poll</i>
+          <span class="hide-menu">Projects</span></a>
+      </li>
+      <li class="menu-item-has-children"><a href="javascript:void(0);"><i class="list-icon material-icons">settings</i>
+          <span class="hide-menu">Settings</span></a>
+        <ul class="list-unstyled sub-menu">
+          <li><a href="{% url 'members_view' %}">Contacts</a>
+          </li>
+          <li><a href="">Account</a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+    <!-- /.side-menu -->
+  </nav>
+  <!-- /.sidebar-nav -->
+</aside>

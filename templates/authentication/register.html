@@ -1,0 +1,54 @@
+{% extends 'base_auth.html' %}
+{% load static %}
+{% block title %}Register{% endblock %}
+{% block content %}
+<div class="col-10 ml-sm-auto col-sm-8 col-md-4 ml-md-auto login-center mx-auto">
+    <div class="navbar-header text-center mt-2 mb-4">
+        <a href="#">
+            <img src="{% static 'img/logo-light.png' %}" alt="Boardium Logo">
+        </a>
+    </div>
+    <!-- /.navbar-header -->
+    <h5><a href="javascript:void(0);">Sign Up</a></h5>
+    <p>Signing up is easy. It only takes a few steps and you'll be up and running in no time.</p>
+    <form id="loginform" action="{% url 'register' %}" method="POST">
+        {% csrf_token %}
+        {% include 'includes/messages.html' %}
+        <div class="form-group">
+            <label>Username</label>
+            <input class="form-control" type="text" name="username" required="" id="usernameField"
+                value="{{fieldValues.username}}" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <label>Email</label>
+            <input class="form-control" type="email" name="email" required="" value="{{fieldValues.email}}"
+                id="emailField" placeholder="Email">
+        </div>
+        <div class="form-group">
+            <label>Password</label>
+            <input class="form-control" type="password" id="passwordField" required="" placeholder="Password">
+        </div>
+        <div class="form-group no-gutters mb-3">
+            <div class="checkbox checkbox-primary">
+                <label>
+                    <input type="checkbox"> <span class="label-text">I agree to all <a href="#">Terms &amp;
+                            Conditions</a></span>
+                </label>
+            </div>
+            <!-- /.checkbox -->
+        </div>
+        <!-- /.form-group -->
+        <div class="form-group text-center no-gutters mb-4">
+            <button class="btn btn-block btn-lg btn-primary text-uppercase fs-12 fw-600" type="submit">Sign
+                Up</button>
+        </div>
+        <hr class="mb-4">
+    </form>
+    <!-- /.form-horzontal -->
+    <footer class="col-sm-12 text-center">
+        <p>Already have an account? <a href="{% url 'login' %}" class="text-primary m-l-5"><b>Login</b></a>
+        </p>
+    </footer>
+</div>
+<!-- /.login-center -->
+{% endblock %}

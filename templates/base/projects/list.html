@@ -1,0 +1,190 @@
+{% extends 'base.html' %} {% load static %} {% block title %}Projects{% endblock %} {% block scripts %}
+<style type="text/css">
+  #id_invitees > ul {
+    max-height: 150px;
+    overflow-y: scroll;
+    border: 2px solid rgb(158, 158, 158);
+    padding: 10px;
+    border-radius: 5px;
+  }
+</style>
+{% endblock scripts %} {% block content %}
+<div class="container-fluid">
+  <!--Form Modal -->
+  <div
+    class="modal modal-blue fade bs-modal-lg-blue"
+    id="meetingModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create Meeting</h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            X
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="form-group">
+              <label for="title">Title</label>
+              {{form.title}}
+            </div>
+            <div class="form-group">
+              <label for="agenda">Agenda</label>
+              {{form.agenda}}
+            </div>
+            <div class="form-group">
+              <label for="estimated_period">Estimated Period</label>
+              {{form.estimated_period}}
+            </div>
+            <div class="form-group">
+              <label for="date">Meeting for:</label>
+              {{form.group}}
+            </div>
+            <div class="form-group">
+              <label for="date">Start Time</label>
+              {{form.start_time}}
+            </div>
+            <div class="form-group">
+              <label for="time">End Time</label>
+              {{form.end_time}}
+            </div>
+            <div class="form-group">
+              <label for="description">Description</label>
+              {{form.description}} {{form.media}}
+            </div>
+            <div class="text-center mr-b-30">
+              <button class="btn btn-rounded btn-success ripple" type="submit">
+                Add Meeting
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+  <!--Project Modal -->
+  <div
+    class="modal modal-blue fade bs-modal-lg-blue"
+    id="projectsModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create Meeting</h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            X
+          </button>
+        </div>
+        <div class="modal-body">
+          
+            <form action="" method="POST">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-dark btn-sm">Notify
+                    Members</button>
+            </form> &nbsp;
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+  <div class="row page-title clearfix">
+    <div class="page-title-left">
+      <h6 class="page-title-heading mr-0 mr-r-5">Financials</h6>
+      <p class="page-title-description mr-0 d-none d-md-inline-block">
+        financial tracking
+      </p>
+    </div>
+    <!-- /.page-title-left -->
+    <div class="page-title-right d-none d-sm-inline-flex">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Financials</li>
+      </ol>
+    </div>
+    <!-- /.page-title-right -->
+  </div>
+  <!-- /.page-title -->
+  {% include 'includes/messages.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-sm-6 col-12 mr-b-20">
+        {% if request.user.is_staff %}
+        <div class="form-group">
+          <a
+            href="#"
+            data-bs-toggle="modal"
+            data-bs-target="#meetingModal"
+            class="btn btn-dark btn-sm"
+            >Create entry</a
+          >
+        </div>
+        {% endif %}
+      </div>
+      <div class="col-lg-4">
+        <div class="form-group">
+            <input type="text" class="form-control" id="searchField" placeholder="Search">
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Widget for graph stats -->
+  <div class="widget-list row"></div>
+
+  <!-- Widget for list -->
+  <div class="row">
+    <div class="col-lg-12 widget-holder widget-full-height widget-flex">
+      {% if projects %}
+      <div class="widget-bg">
+        <div class="widget-body clearfix">
+          {% with projects.count as total_finanacials %}
+          <h5 class="box-title mr-b-0">
+            {{ total_finanacials }} Project{{ total_finanacials|pluralize }}
+          </h5>
+          {% endwith %}
+        </div>
+        {% for item in projects %}
+        <div class="alert alert-light ">
+            <h6 class="box-title mr-b-0">{{item.title}}</h6>
+            <p class="text-muted">Agenda: {{item.entity}}</p>
+            <p class="text-muted">Duration: {{item.start_date|date}} - {{item.end_date|date}}</p>
+            <p class="text-muted">Description: {{item.description}}</p>
+            <a href=""
+                class="btn btn-sm px-3 btn-rounded btn-success text-uppercase fw-600 fs-11"></a>
+            <hr />
+        </div>
+        {% endfor %}
+      </div>
+      {% else %}
+      <div class="alert alert-light">
+        <a
+          href=""
+          class="text-center"
+          style="text-decoration: none; color: #dc3545"
+          >No data avaliable</a
+        >
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block javascript %}
+<script src="{% static 'js/searchFinancials.js' %}"></script> 
+{% endblock javascript %}
