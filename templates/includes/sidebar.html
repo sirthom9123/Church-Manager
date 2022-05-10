@@ -31,9 +31,8 @@
       <li class="menu-item-has-children"><a href="javascript:void(0);"><i class="list-icon material-icons">money</i>
         <span class="hide-menu">Finance</span></a>
       <ul class="list-unstyled sub-menu">
-        <li><a href="{% url 'financial_list' %}">Income</a>
-        <li><a href="{% url 'expense_list' %}">Expenses</a>
-        <li><a href="{% url 'expense_list' %}">Income vs Expenses</a>
+        <li><a href="{% url 'financial_list' %}">Finances</a>
+        <li><a href="{% url 'get_income_expenses_view' %}">Income vs Expenses</a>
         </li>
       </ul>
     </li>
@@ -56,11 +55,12 @@
       <li class="menu-item"><a href="{% url 'project_list' %}"><i class="list-icon material-icons">poll</i>
           <span class="hide-menu">Projects</span></a>
       </li>
+      <li class="menu-item"><a href="{% url 'members_view' %}"><i class="list-icon material-icons">person</i>
+          <span class="hide-menu">Contacts</span></a>
+      </li>
       <li class="menu-item-has-children"><a href="javascript:void(0);"><i class="list-icon material-icons">settings</i>
           <span class="hide-menu">Settings</span></a>
         <ul class="list-unstyled sub-menu">
-          <li><a href="{% url 'members_view' %}">Contacts</a>
-          </li>
           <li><a href="">Account</a>
           </li>
         </ul>

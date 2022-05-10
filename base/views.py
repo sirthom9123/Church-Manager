@@ -7,8 +7,14 @@ from django.contrib.auth.decorators import login_required
 from django.core.paginator import Paginator
 from django.contrib import messages
 
-from .models import Contact, Entity, Expenses, Financial, Project
-from .forms import ExpensesForm, FinancialForm, MemberForm
+from plotly.offline import plot
+import pandas as pd
+import plotly.express as px
+from plotly.graph_objs import scatter
+
+
+from .models import Contact, Entity, FinanceCategory, Financial, Project
+from .forms import FinancialForm, MemberForm
 
 
 # Create your views here.
@@ -45,25 +51,31 @@ def financial_form(request):
             return redirect('financial_list')
         
 
+""" Finance """
 @login_required(login_url='login')
-def financials_list(request):
-    """ Income """
-    entity = Entity.objects.all()
-    entity_group = entity.values_list("id", flat=True)
+def financials_list(request, category_slug=None):
+    categories = FinanceCategory.objects.all()
     
-    financials = Financial.objects.all().order_by('-upload_date')
-    paginator = Paginator(financials, 25)
+    object_list = Financial.objects.all().order_by('-upload_date')
+    
+    category = None
+    if category_slug:
+        category = get_object_or_404(FinanceCategory, slug=category_slug)
+        object_list = object_list.filter(category=category)
+        
+    paginator = Paginator(object_list, 25)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
     
     form = FinancialForm()
     
     context = {
-        'fin': financials,
-        'page_obj': page_obj,
+        'fin': page_obj,
         'form': form,
+        'category': category,
+        'categories': categories,
         }
-    return render(request, 'base/financials/income/list.html', context)
+    return render(request, 'base/financials/list.html', context)
 
 
 def search_financials(request):
@@ -72,74 +84,43 @@ def search_financials(request):
         financials = Financial.objects.filter(
                         contact__id__istartswith=search_str) | Financial.objects.filter(
                         entity__name__istartswith=search_str) | Financial.objects.filter(
-                        project__title__icontains=search_str)
+                        project__title__icontains=search_str) | Financial.objects.filter(
+                        category__name__istartswith=search_str)
         data = financials.values()
         return JsonResponse(list(data), safe=False)
 
 
-"""Expenses scripts"""
-def expenses_form(request):
-    if request.method == "POST":
-        form = ExpensesForm(request.POST)
-        if form.is_valid():
-            init = form.save(commit=False)
-            init.owner = request.user
-            init.save()
-            messages.success(request, 'Record created successfully!')
-            return redirect('expense_list')
-        else:
-            messages.error(request, form.errors)
-            return redirect('expense_list')
-        
-        
-@login_required(login_url='login')
-def expenses_list(request):
-    """ Expenses """
-    entity = Entity.objects.all()
-    entity_group = entity.values_list("id", flat=True)
-    
-    
-    
-    expenses = Expenses.objects.all().order_by('-captured_date')
-    
-
-
-    
-    paginator = Paginator(expenses, 25)
-    page_number = request.GET.get('page')
-    page_obj = Paginator.get_page(paginator, page_number)
-    
-    form = ExpensesForm()
-    
-    context = {
-        'expenses': expenses,
-        'page_obj': page_obj,
-        'form': form,
-        }
-    return render(request, 'base/financials/expenses/list.html', context)
-
-
-def search_expenses(request):
-    if request.method == 'POST':
-        search_str = json.loads(request.body).get('searchText')
-        expnses = Expenses.objects.filter(
-                        enity__id__istartswith=search_str) | Expenses.objects.filter(
-                        project__name__istartswith=search_str) | Expenses.objects.filter(
-                        owner__icontains=search_str)
-        data = expnses.values()
-        return JsonResponse(list(data), safe=False)
-
 
 """Income vs Expenses"""
-def get_income_expenses_view(request):
-    expense_qs = Expenses.objects.all()
-    expenses_data = [{
-        'Amount': x.amount,
-        'Date': x.captured_date.isocalendar()[2]
-    } for x in expense_qs]
+def get_income_expenses_view(request, category_slug=None):
     
-    context = {}
-    return render(request, '', context)
+    income_qs = Financial.objects.all().order_by('upload_date')
+        
+    _data = [{
+        # Amount needs to be summed up
+        'Amount': x.amount,
+        'Month': x.upload_date.strftime("%b"),
+        'Entity': x.entity,
+        'Category': x.category,
+    } for x in income_qs]
+
+    # DataFrame
+    dt = pd.DataFrame(_data)
+    
+    # Create the graph by finance category
+    fig = px.line(dt, x='Month', y='Amount', color='Category', markers=True)
+    # fig.update_yaxes(autorange='reversed')
+    category_plot = plot(fig, output_type='div', include_plotlyjs=False, show_link=False, link_text="")
+    
+    # Create the graph by finance entity
+    fig_ = px.line(dt, x='Month', y='Amount', color='Entity', markers=True)
+    # fig.update_yaxes(autorange='reversed')
+    entity_plot_ = plot(fig_, output_type='div', include_plotlyjs=False, show_link=False, link_text="")
+    
+    context = {'plot': category_plot, 'entity': entity_plot_}
+    return render(request, 'base/financials/index.html', context)
+
+
 
 @login_required(login_url='login')
 def projects_list(request):

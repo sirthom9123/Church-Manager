@@ -1,8 +1,9 @@
 - Interactive charts for income vs expenses with table view on another tab
-- Detail view on modal rather than another page
-- Fix calendar
-- Projects 
-- Newsletter send email/sms button
+    * Needs to accumulate the total for the month and plot accordingly
+- Detail view on modal rather than redirect to another page
+- Fix calendar 
+- Projects ???
+
 
 https://blog.pyplane.com/blog/django-and-javascript-quiz-app/
 

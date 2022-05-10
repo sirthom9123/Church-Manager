@@ -66,13 +66,27 @@ class Project(models.Model):
         return self.title
     
     
+# Finance library
+class FinanceCategory(models.Model):
+    name = models.CharField(max_length=100, blank=True, null=True)
+    slug = models.SlugField(max_length=100, null=True)
+
+    class Meta:
+        verbose_name_plural = 'Finance Categories'
+
+    def __str__(self):
+        return self.name
+    
+    
 class Financial(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     entity = models.ForeignKey(Entity, on_delete=models.CASCADE, help_text='Which entity does it belong to?')
     project = models.ForeignKey(Project, on_delete=models.CASCADE, help_text='Which project does it belong to?', blank=True, null=True)
-    profile = models.ForeignKey(Category, on_delete=models.CASCADE, help_text='What is the amount for?')
+    profile = models.ForeignKey(Category, on_delete=models.CASCADE, help_text='What is the amount for?', blank=True, null=True)
+    category = models.ForeignKey(FinanceCategory, on_delete=models.CASCADE, help_text='Is it an income or expense?', null=True)
     amount = models.DecimalField(decimal_places=2, max_digits=10)
-    contact = models.ForeignKey(Contact, on_delete=models.CASCADE)
+    contact = models.ForeignKey(Contact, on_delete=models.CASCADE, blank=True, null=True)
+    reason = models.TextField(blank=True, null=True)
     upload_date = models.DateField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
     
@@ -85,25 +99,7 @@ class Financial(models.Model):
         super().save(*args, **kwargs)
     
     class Meta:
-        verbose_name_plural = 'Income'
+        verbose_name_plural = 'Finances'
         ordering = ('-upload_date',)
         
 
-class Expenses(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    owner = models.ForeignKey(User, on_delete=models.CASCADE)
-    entity = models.ForeignKey(Entity, on_delete=models.CASCADE, help_text='Which entity does it belong to')
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, help_text='Which project does it belong to', blank=True, null=True)
-    amount = models.DecimalField(decimal_places=2, max_digits=10)
-    reason = models.TextField()
-    captured_date = models.DateField(null=True, blank=True)
-    created = models.DateTimeField(null=True, auto_now_add=True)
-    updated = models.DateTimeField(null=True, auto_now=True)
-    
-    class Meta:
-        verbose_name_plural = 'Expenses'
-        ordering = ('-captured_date',)
-        
-    def __str__(self):
-        return f'{self.entity}-R{self.amount} on {self.captured_date}'
-    

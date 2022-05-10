@@ -1,0 +1,187 @@
+{% extends 'base.html' %} {% load static %} {% load crispy_forms_tags %} 
+{% block title %}Financials Income{% endblock %} 
+{% block scripts %}
+<style type="text/css">
+  /* Style the tab content */
+  .tabcontent {
+    display: none;
+    -webkit-animation: fadeEffect 1s;
+    animation: fadeEffect 1s;
+  }
+  /* Fade in tabs */
+  @-webkit-keyframes fadeEffect {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes fadeEffect {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  .tab {
+    overflow: hidden;
+  }
+</style>
+{% endblock scripts %} {% block content %}
+<div class="container-fluid">
+  <!--Form Modal -->
+  <div
+    class="modal modal-blue fade bs-modal-lg-blue"
+    id="meetingModal"
+    tabindex="-1"
+    aria-labelledby="exampleModalLabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Create Record</h5>
+          <button
+            type="button"
+            class="close"
+            data-bs-dismiss="modal"
+            aria-label="Close"
+          >
+            X
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'financial_form' %}" method="POST">
+            {% csrf_token %}
+            <div class="form-group">{{form|crispy}}</div>
+            <div class="text-center mr-b-30">
+              <button class="btn btn-rounded btn-success ripple" type="submit">
+                Add Record
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- End Modal -->
+  <div class="row page-title clearfix">
+    <div class="page-title-left">
+      <h6 class="page-title-heading mr-0 mr-r-5">Financials</h6>
+      <p class="page-title-description mr-0 d-none d-md-inline-block">
+        Graphical Representation
+      </p>
+    </div>
+    <!-- /.page-title-left -->
+    <div class="page-title-right d-none d-sm-inline-flex">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
+        <li class="breadcrumb-item active">Graphical</li>
+      </ol>
+    </div>
+    <!-- /.page-title-right -->
+  </div>
+  <!-- /.page-title -->
+  {% include 'includes/messages.html' %}
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8 col-sm-6 col-12 mr-b-20 tab">
+        <button
+          class="tablinks btn btn-info btn-sm"
+          onclick="openFinance(event, 'byFinance')"
+          id="defaultOpen"
+          >Income vs Expense</button
+        >
+        &nbsp;
+        <button
+          class="tablinks btn btn-info btn-sm"
+          onclick="openFinance(event, 'byEntity')"
+          >Entity</button
+        >
+      </div>
+      <div class="col-lg-4">
+        <div class="form-group tab"></div>
+      </div>
+    </div>
+  </div>
+  <!-- Widget for graph stats -->
+  <div class="widget-list row">
+    <!-- Toggle between 'income vs expense' & 'entity' -->
+  </div>
+
+  <!-- Widget for list -->
+  <div class="row">
+    <!-- By finance -->
+    <div
+      class="col-lg-12 widget-holder widget-full-height widget-flex"
+      
+    >
+      {% if plot %}
+      <div class="widget-bg tabcontent" id="byFinance">
+        <div class="widget-body clearfix">
+          <h3 class="box-title mr-b-0">Income vs Expenses</h3>
+        </div>
+        <div class="alert alert-light app-table">
+          {% autoescape off %} {{ plot }} {% endautoescape %}
+        </div>
+      </div>
+      {% else %}
+      <div class="alert alert-light">
+        <a
+          href=""
+          class="text-center"
+          style="text-decoration: none; color: #dc3545"
+          >No data avaliable</a
+        >
+      </div>
+      {% endif %}
+    
+
+      <!-- By Entity -->
+      {% if entity %}
+      <div class="widget-bg tabcontent" id="byEntity">
+        <div class="widget-body clearfix">
+          <h3 class="box-title mr-b-0">Entity</h3>
+        </div>
+        <div class="alert alert-light app-table">
+          {% autoescape off %} {{ entity }} {% endautoescape %}
+        </div>
+      </div>
+      {% else %}
+      <div class="alert alert-light">
+        <a
+          href=""
+          class="text-center"
+          style="text-decoration: none; color: #dc3545"
+          >No data avaliable</a
+        >
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %} {% block javascript %}
+<script>
+  function openFinance(evt, FinanceName) {
+    let i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tabcontent");
+
+    for (i = 0; i < tabcontent.length; i++) {
+      tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tablinks");
+
+    for (i = 0; i < tablinks.length; i++) {
+      tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+
+    document.getElementById(FinanceName).style.display = "block";
+    evt.currentTarget.className += " active";
+  }
+  // Get the element with id="defaultOpen" and click on it
+  document.getElementById("defaultOpen").click();
+</script>
+{% endblock javascript %}

@@ -9,20 +9,22 @@ class CategoryAdmin(admin.ModelAdmin):
     list_filter = ['name',]
     prepopulated_fields = {'slug': ('name',)}
 
+
+@admin.register(FinanceCategory)
+class FinanceCategoryAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name', 'slug']
+    list_filter = ['name',]
+    prepopulated_fields = {'slug': ('name',)}
+    
+
 @admin.register(Financial)
 class FinancialAdmin(admin.ModelAdmin):
-    list_display = ['id', 'entity', 'project', 'amount', 'contact', 'upload_date']
-    list_filter = ['project', 'upload_date']
-    search_fields = ['project', 'upload_date', 'contact']
+    list_display = ['id', 'entity', 'category', 'project', 'amount', 'contact', 'upload_date']
+    list_filter = ['category', 'entity', 'project', 'upload_date']
+    search_fields = ['project', 'category', 'upload_date', 'contact']
     ordering = ['upload_date', 'project']
+    list_editable = ['category', ]
 
-
-@admin.register(Expenses)
-class ExpensesAdmin(admin.ModelAdmin):
-    list_display = ['id', 'owner', 'entity', 'project', 'amount', 'captured_date', 'created']
-    list_filter = ['project', 'captured_date']
-    search_fields = ['project', 'captured_date', 'contact']
-    ordering = ['captured_date', 'project']
 
 
 @admin.register(Contact)
