@@ -58,8 +58,11 @@ def meeting_list(request):
     cal = Calendar(d.year, d.month)
     html_cal = cal.formatmonth(withyear=True)
     
+    user_obj = request.user
+    groups = user_obj.groups.all().values_list("id", flat=True)
+    
     # Meetings
-    meeting = ScheduleMeeting.objects.filter(start_time__gte=datetime.now()).order_by('-created')
+    meeting = ScheduleMeeting.objects.filter(group__in=groups, start_time__gte=datetime.now()).order_by('-created')
     old_meeting = ScheduleMeeting.objects.filter(start_time__lte=datetime.now()).order_by('-created')
     
     # Filter meetings by agenda
@@ -85,7 +88,7 @@ def meeting_list(request):
 # Meeting Detail
 @login_required(login_url='login')
 def meeting_detail(request, pk):
-    user_obj = request.user
+    
     meeting = get_object_or_404(ScheduleMeeting, pk=pk)
 
     try:

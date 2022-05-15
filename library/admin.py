@@ -14,9 +14,9 @@ class ShareFileFieldInLine(admin.TabularInline):
 
 @admin.register(Dropbox)
 class ShareFileAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'created')
-    list_filter = ('category', 'created')
-    search_fields = ('category', 'created')
+    list_display = ('title', 'category', 'group', 'created')
+    list_filter = ('category', 'group', 'created')
+    search_fields = ('category', 'group', 'created')
     inlines = [ShareFileFieldInLine]
 
 

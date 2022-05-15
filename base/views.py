@@ -11,10 +11,12 @@ from plotly.offline import plot
 import pandas as pd
 import plotly.express as px
 from plotly.graph_objs import scatter
+from library.models import Dropbox
 
-
-from .models import Contact, Entity, FinanceCategory, Financial, Project
+from .models import Contact, FinanceCategory, Financial, Project
 from .forms import FinancialForm, MemberForm
+from meetings.models import ScheduleMeeting
+from news.models import Newsletter
 
 
 # Create your views here.
@@ -22,28 +24,39 @@ from .forms import FinancialForm, MemberForm
 def dashboard(request):
     user_obj = request.user
     groups = user_obj.groups.all().values_list("id", flat=True)
-    entity = Entity.objects.all()
-    entity_group = entity.values_list("id", flat=True)
     
-    financials = Financial.objects.filter(entity__in=entity_group).order_by('-created')[:3]
     
-    projects = Project.objects.all().order_by('-created')[:3]
-
- 
+    financials = Financial.objects.filter(entity__in=groups).order_by('-created')[:3]
+    projects = Project.objects.filter(group__in=groups).order_by('-created')[:3]
+    meetings = ScheduleMeeting.objects.filter(group__in=groups,start_time__gte=dt.now()).order_by('-id')[:3]
+    object_list = Dropbox.objects.filter(group__in=groups).order_by('-id')[:3]
+    events = Newsletter.objects.filter(group__in=groups).order_by('-created_at')[:3]
 
     context = {
         'fin': financials,
-        'projects': projects
+        'projects': projects,
+        'meeting': meetings,
+        'object_list': object_list,
+        'events': events,
         }
     return render(request, 'base/dashboard.html', context)
 
 """Income scripts"""
 @login_required(login_url='login')
 def financial_form(request):
+    user_obj = request.user
+    groups = [group for group in user_obj.groups.all()]
+    entity = Financial.objects.filter(entity__in=groups).first()
+    print(groups, "<<<<<<<<<<<<<<<<<<")
+    
     if request.method == "POST":
         form = FinancialForm(request.POST)
         if form.is_valid():
-            form.save()
+            instance = form.save(commit=False)
+            instance.entity = [group for group in groups]
+            instance.created_by = user_obj
+            instance.save()
+            
             messages.success(request, 'Record created successfully!')
             return redirect('financial_list')
         else:
@@ -54,9 +67,12 @@ def financial_form(request):
 """ Finance """
 @login_required(login_url='login')
 def financials_list(request, category_slug=None):
+    user_obj = request.user
+    groups = user_obj.groups.all().values_list("id", flat=True)
+    
     categories = FinanceCategory.objects.all()
     
-    object_list = Financial.objects.all().order_by('-upload_date')
+    object_list = Financial.objects.filter(entity__in=groups).order_by('-upload_date')
     
     category = None
     if category_slug:
@@ -83,7 +99,6 @@ def search_financials(request):
         search_str = json.loads(request.body).get('searchText')
         financials = Financial.objects.filter(
                         contact__id__istartswith=search_str) | Financial.objects.filter(
-                        entity__name__istartswith=search_str) | Financial.objects.filter(
                         project__title__icontains=search_str) | Financial.objects.filter(
                         category__name__istartswith=search_str)
         data = financials.values()
@@ -93,8 +108,9 @@ def search_financials(request):
 
 """Income vs Expenses"""
 def get_income_expenses_view(request, category_slug=None):
-    
-    income_qs = Financial.objects.all().order_by('upload_date')
+    user_obj = request.user
+    groups = user_obj.groups.all().values_list("id", flat=True)
+    income_qs = Financial.objects.filter(entity__in=groups).order_by('upload_date')
         
     _data = [{
         # Amount needs to be summed up
@@ -112,22 +128,22 @@ def get_income_expenses_view(request, category_slug=None):
     # fig.update_yaxes(autorange='reversed')
     category_plot = plot(fig, output_type='div', include_plotlyjs=False, show_link=False, link_text="")
     
-    # Create the graph by finance entity
-    fig_ = px.line(dt, x='Month', y='Amount', color='Entity', markers=True)
-    # fig.update_yaxes(autorange='reversed')
-    entity_plot_ = plot(fig_, output_type='div', include_plotlyjs=False, show_link=False, link_text="")
+    # # Create the graph by finance entity
+    # fig_ = px.line(dt, x='Month', y='Amount', color='Entity', markers=True)
+    # # fig.update_yaxes(autorange='reversed')
+    # entity_plot_ = plot(fig_, output_type='div', include_plotlyjs=False, show_link=False, link_text="")
     
-    context = {'plot': category_plot, 'entity': entity_plot_}
+    context = {'plot': category_plot,}
     return render(request, 'base/financials/index.html', context)
 
 
 
 @login_required(login_url='login')
 def projects_list(request):
-    entity = Entity.objects.all()
-    entity_group = entity.values_list("id", flat=True)
+    user_obj = request.user
+    groups = user_obj.groups.all().values_list("id", flat=True)
     
-    projects = Project.objects.all().order_by('-created')
+    projects = Project.objects.filter(group__in=groups).order_by('-created')
     paginator = Paginator(projects, 25)
     page_number = request.GET.get('page')
     page_obj = Paginator.get_page(paginator, page_number)
@@ -152,7 +168,9 @@ def search_projects(request):
 """Members"""
 @login_required(login_url='login')
 def members_view(request):
-    member = Contact.objects.all()
+    user_obj = request.user
+    groups = user_obj.groups.all().values_list("id", flat=True)
+    member = Contact.objects.filter(belong_to__in=groups)
     
     
     form = MemberForm(request.POST or None)

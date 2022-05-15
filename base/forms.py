@@ -5,7 +5,7 @@ from .models import Contact, Financial
 class FinancialForm(forms.ModelForm):
     class Meta:
         model = Financial
-        fields = ('entity', 'project', 'profile', 'category', 'amount', 'contact', 'upload_date')
+        fields = ('project', 'profile', 'amount', 'contact', 'upload_date', 'reason')
         
         widgets = {
             'upload_date': forms.DateInput(attrs={'class': 'form-control', 'type': 'date'}, format='%Y-%m-%d'),           

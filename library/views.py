@@ -9,11 +9,14 @@ from .forms import *
 
 @login_required(login_url='login')
 def document_library(request, category_slug=None):
+    user_obj = request.user
+    groups = user_obj.groups.all().values_list("id", flat=True)
+    
     categories = DocumentCategory.objects.all()
     form = ShareFileForm()
     file_form = FileFieldForm()
     
-    object_list = Dropbox.objects.all().order_by('-id') 
+    object_list = Dropbox.objects.filter(group__in=groups).order_by('-id') 
     
     category = None
     if category_slug:

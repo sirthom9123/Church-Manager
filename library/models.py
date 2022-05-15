@@ -20,7 +20,8 @@ class DocumentCategory(models.Model):
 class Dropbox(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
-    category = models.ForeignKey(DocumentCategory, on_delete=models.CASCADE, null=True)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, related_name='library_group')
+    category = models.ForeignKey(DocumentCategory, on_delete=models.CASCADE, null=True,)
     desc = models.TextField(null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True, null=True)
 

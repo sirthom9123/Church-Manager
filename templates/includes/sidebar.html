@@ -36,24 +36,17 @@
         </li>
       </ul>
     </li>
-      <li class="menu-item-has-children"><a href="javascript:void(0);"><i class="list-icon material-icons">event</i>
+      <li class="menu-item"><a href="{% url 'meeting_list' %}"><i class="list-icon material-icons">event</i>
           <span class="hide-menu">Calendar</span></a>
-        <ul class="list-unstyled sub-menu">
-          <li><a href="{% url 'meeting_list' %}">Scheduled Meetings</a>
-          </li>
-          <li><a href="{% url 'events' %}">Newsletters</a>
-          </li>
-        </ul>
       </li>
-      <li class="menu-item-has-children"><a href="javascript:void(0);"><i class="list-icon material-icons">inbox</i>
-          <span class="hide-menu">Documents</span></a>
-        <ul class="list-unstyled sub-menu">
-          <li class="menu-item"><a href="{% url 'library' %}">Library</a>
-          </li>
-        </ul>
+      <li class="menu-item"><a href="{% url 'library' %}"><i class="list-icon material-icons">inbox</i>
+          <span class="hide-menu">Document Library</span></a>
       </li>
       <li class="menu-item"><a href="{% url 'project_list' %}"><i class="list-icon material-icons">poll</i>
           <span class="hide-menu">Projects</span></a>
+      </li>
+      <li class="menu-item"><a href="{% url 'events' %}"><i class="list-icon material-icons">drafts</i>
+          <span class="hide-menu">Newsletters</span></a>
       </li>
       <li class="menu-item"><a href="{% url 'members_view' %}"><i class="list-icon material-icons">person</i>
           <span class="hide-menu">Contacts</span></a>

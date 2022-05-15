@@ -2,13 +2,14 @@ from decimal import Decimal
 from django.urls import reverse
 from django.utils import timezone
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 import uuid, datetime as dt
 from .utils import create_ref_code
 
 PROFILE_TYPES = (('Tithe', 'Tithe'), ('Offering', 'Offering'), ('Partnership', 'Partnership'), ('Pastors seed', 'Pastors seed'))
 
 class Category(models.Model):
+    """Profiles"""
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200)
     
@@ -17,20 +18,25 @@ class Category(models.Model):
     
     class Meta:
         verbose_name_plural = 'Categories'
-    
 
-class Entity(models.Model):
-    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+
+class ContactCategory(models.Model):
+    """Contact"""
     name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200)
     
     def __str__(self):
         return self.name
     
     class Meta:
-        verbose_name_plural = 'Entities'
+        verbose_name_plural = 'Contact Categories'
+    
+
     
 class Contact(models.Model):
     id = models.CharField(primary_key=True, default=None, editable=False, max_length=15)
+    belong_to = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='contact_group', null=True)
+    category = models.ForeignKey(ContactCategory, on_delete=models.CASCADE, null=True)
     first_name = models.CharField(max_length=200)    
     last_name = models.CharField(max_length=200)    
     phone = models.CharField(max_length=25, help_text='Phone number must start with country code, e.g. +27')
@@ -51,7 +57,8 @@ class Contact(models.Model):
 class Project(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     title = models.CharField(max_length=200)
-    entity = models.ForeignKey(Entity, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='project_group', null=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='project_owner', null=True)
     description = models.TextField()
     start_date = models.DateField(null=True, blank=True)
     end_date = models.DateField(null=True, blank=True)
@@ -80,7 +87,8 @@ class FinanceCategory(models.Model):
     
 class Financial(models.Model):
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
-    entity = models.ForeignKey(Entity, on_delete=models.CASCADE, help_text='Which entity does it belong to?')
+    entity = models.ForeignKey(Group, on_delete=models.CASCADE, help_text='Which entity does it belong to?', related_name='assigned_group', null=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name='created_by', null=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, help_text='Which project does it belong to?', blank=True, null=True)
     profile = models.ForeignKey(Category, on_delete=models.CASCADE, help_text='What is the amount for?', blank=True, null=True)
     category = models.ForeignKey(FinanceCategory, on_delete=models.CASCADE, help_text='Is it an income or expense?', null=True)

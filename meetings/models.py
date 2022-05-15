@@ -1,11 +1,12 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import User, Group
 from django.urls import reverse
 
 
 """Meetings"""
 class ScheduleMeeting(models.Model):
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, on_delete=models.CASCADE, null=True, related_name='meeting_group')
     agenda = models.CharField(max_length=200)
     estimated_period = models.CharField(max_length=10)
     start_time = models.DateTimeField(null=True)

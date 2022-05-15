@@ -8,7 +8,9 @@ from .forms import NewsletterForm
 
 
 def newsletter_view(request):
-    obj_list = Newsletter.objects.all()
+    user_obj = request.user
+    groups = user_obj.groups.all().values_list("id", flat=True)
+    obj_list = Newsletter.objects.filter(group__in=groups).order_by('-created_at')
     
     form = NewsletterForm(request.POST or None)
     if request.method == 'POST':

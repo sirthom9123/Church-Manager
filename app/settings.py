@@ -47,6 +47,8 @@ INSTALLED_APPS = [
     'crispy_forms',
     'django_filters',
     'django_summernote',
+    'import_export',
+
 ]
 
 MIDDLEWARE = [
@@ -119,7 +121,7 @@ TIME_ZONE = 'Africa/Johannesburg'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
