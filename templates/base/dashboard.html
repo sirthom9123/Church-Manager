@@ -118,7 +118,7 @@
     <div class="page-title-left">
       <h6 class="page-title-heading mr-0 mr-r-5">Dashboard</h6>
       <p class="page-title-description mr-0 d-none d-md-inline-block">
-        entities, meetings, projects, documents, events
+        finances, meetings, projects, documents, events
       </p>
     </div>
     <!-- /.page-title-left -->
@@ -141,24 +141,27 @@
         <div class="widget-heading">
           <h2 class="widget-title">Financials</h2>
         </div>
-        {% if fin %} 
+        {% if fin %}
         <div class="custom-scroll-content scrollbar-enabled">
           {% for item in fin %}
           <div class="alert alert-light">
             <h6 class="box-title mr-b-0">
-              {% if item.project %}Project: {{item.project}}{% else %}
-              {% endif%}
+              {% if item.project %}Project: {{item.project}}{% else %} {% endif %}
             </h6>
-            <h6 class="box-title mr-b-0">Type:</h6> <p>{{item.profile}} </p>           
-            <h6 class="box-title mr-b-0">Amount:</h6> <p>{{item.amount}}</p>
-            <h6 class="box-title mr-b-0">Contact:</h6> <p>{{item.contact}}</p>
-            <h6 class="box-title mr-b-0">Date:</h6> <p>{{item.upload_date|date}}</p>
+            <h6 class="box-title mr-b-0">Type:</h6>
+            <p>{{item.profile}}</p>
+            <h6 class="box-title mr-b-0">Amount:</h6>
+            <p>{{item.amount}}</p>
+            <h6 class="box-title mr-b-0">Contact:</h6>
+            <p>{{item.contact}}</p>
+            <h6 class="box-title mr-b-0">Date:</h6>
+            <p>{{item.upload_date|date}}</p>
 
             <hr />
           </div>
           {% endfor %}
         </div>
-         {% else %}
+        {% else %}
         <div class="alert alert-light">
           <a
             href=""
@@ -255,20 +258,24 @@
         <div class="widget-heading">
           <h2 class="widget-title">Upcoming Meetings</h2>
         </div>
-        {% if meeting %} 
+        {% if meeting %}
         <div class="custom-scroll-content scrollbar-enabled">
           {% for item in meeting %}
           <div class="alert alert-light">
-            <h6 class="box-title mr-b-0">Agenda:</h6> <p>{{item.agenda}}</p>
-            <h6 class="box-title mr-b-0">Estimated Time:</h6> <p>{{item.estimated_period}} </p>           
-            <h6 class="box-title mr-b-0">Duration:</h6> <p>{{item.start_time|time}}-{{item.end_time|time}}</p>
-            <h6 class="box-title mr-b-0">Date:</h6> <p>{{item.start_time|date}}</p>
+            <h6 class="box-title mr-b-0">Agenda:</h6>
+            <p>{{item.agenda}}</p>
+            <h6 class="box-title mr-b-0">Estimated Time:</h6>
+            <p>{{item.estimated_period}}</p>
+            <h6 class="box-title mr-b-0">Duration:</h6>
+            <p>{{item.start_time|time}}-{{item.end_time|time}}</p>
+            <h6 class="box-title mr-b-0">Date:</h6>
+            <p>{{item.start_time|date}}</p>
 
             <hr />
           </div>
           {% endfor %}
         </div>
-         {% else %}
+        {% else %}
         <div class="alert alert-light">
           <a
             href=""
@@ -300,9 +307,12 @@
             <p class="card-muted">{{file.desc}}</p>
             <p><strong>Attachments</strong></p>
             {% for f in file.files_field.all %}
-            <a href="{{f.file_field.url}}"
-                class="btn btn-sm px-3 btn-rounded btn-info text-uppercase fw-600 fs-11"
-                target="_blank">Open document</a>
+            <a
+              href="{{f.file_field.url}}"
+              class="btn btn-sm px-3 btn-rounded btn-info text-uppercase fw-600 fs-11"
+              target="_blank"
+              >Open document</a
+            >
             {% endfor %}
             <hr />
           </div>
@@ -319,7 +329,9 @@
         </div>
         {% endif %}
         <div class="widget-todo">
-          <a href="{% url 'library' %}" class="add-btn btn btn-circle btn-md fs-20 btn-primary"
+          <a
+            href="{% url 'library' %}"
+            class="add-btn btn btn-circle btn-md fs-20 btn-primary"
             ><i class="material-icons">open_in_new</i></a
           >
         </div>
@@ -333,20 +345,23 @@
         <div class="widget-heading">
           <h2 class="widget-title">Newsletters</h2>
         </div>
-        {% if events %} 
+        {% if events %}
         <div class="custom-scroll-content scrollbar-enabled">
           {% for item in events %}
           <div class="alert alert-light">
             <h6 class="box-title mr-b-0">{{item.subject}}</h6>
             <p class="text-muted">{{item.contents|safe}}</p>
             <p class="text-muted">Created: {{item.created_at|date}}</p>
-            <a href="{% url 'send_notification' item.pk %}"
-                class="btn btn-sm px-3 btn-rounded btn-success text-uppercase fw-600 fs-11">Send Newsletter</a>
+            <a
+              href="{% url 'send_notification' item.pk %}"
+              class="btn btn-sm px-3 btn-rounded btn-success text-uppercase fw-600 fs-11"
+              >Send Newsletter</a
+            >
             <hr />
           </div>
           {% endfor %}
         </div>
-         {% else %}
+        {% else %}
         <div class="alert alert-light">
           <a
             href=""

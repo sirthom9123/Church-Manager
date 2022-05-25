@@ -17,4 +17,5 @@ urlpatterns = [
     
     #category views
     path('category/<slug:category_slug>/', views.financials_list, name='expense_list_by_category'),
+    path('contacts/category/<slug:category_slug>/', views.members_view, name='contacts_list_by_category'),
 ]

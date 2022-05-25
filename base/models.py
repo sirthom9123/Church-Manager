@@ -4,7 +4,7 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User, Group
 import uuid, datetime as dt
-from .utils import create_ref_code
+from .utils import create_ref_code, custom_sequence
 
 PROFILE_TYPES = (('Tithe', 'Tithe'), ('Offering', 'Offering'), ('Partnership', 'Partnership'), ('Pastors seed', 'Pastors seed'))
 
@@ -34,7 +34,8 @@ class ContactCategory(models.Model):
 
     
 class Contact(models.Model):
-    id = models.CharField(primary_key=True, default=None, editable=False, max_length=15)
+    id = models.AutoField(primary_key=True, default=None, editable=False)
+    code = models.CharField(blank=True, max_length=15, editable=False)
     belong_to = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='contact_group', null=True)
     category = models.ForeignKey(ContactCategory, on_delete=models.CASCADE, null=True)
     first_name = models.CharField(max_length=200)    
@@ -44,11 +45,7 @@ class Contact(models.Model):
     
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
-    
-    def save(self, *args, **kwargs):
-        if self.id is None:
-            self.id = self.last_name + create_ref_code()
-        super().save(*args, **kwargs)
+
     
     class Meta:
         verbose_name_plural = 'Contact List'

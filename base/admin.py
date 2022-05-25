@@ -35,9 +35,10 @@ class FinancialAdmin(ImportExportModelAdmin):
 
 @admin.register(Contact)
 class ContactAdmin(admin.ModelAdmin):
-    list_display = ['id', 'belong_to', 'category', 'first_name', 'last_name', 'phone', 'email']
-    list_filter = ['id', 'belong_to', 'last_name']
-    search_fields = ['id', 'belong_to', 'last_name']
+    list_display = ['id', 'code', 'belong_to', 'category', 'first_name', 'last_name', 'phone', 'email']
+    list_display_links= ['code', 'category']
+    list_filter = ['code', 'belong_to', 'last_name']
+    search_fields = ['code', 'belong_to', 'last_name']
     list_editable = ['belong_to',]
 
 @admin.register(Project)

@@ -2,7 +2,7 @@
     * Needs to accumulate the total for the month and plot accordingly
 - Detail view on modal rather than redirect to another page
 - Fix calendar 
-- Projects ???
+- contact list id by category
 
 
 https://blog.pyplane.com/blog/django-and-javascript-quiz-app/
@@ -15,14 +15,14 @@ TV
 - Partnership
 
 id 
-HGGC_Member_
-HGGC_Partn_
+Member_
+Partn_
 
 id 
-TV_Member_
-TV_Partn_
-TV_Investor_
-TV_OnceOff_
+Member_
+Partn_
+Investor_
+OnceOff_
 
 
 hggc_admin

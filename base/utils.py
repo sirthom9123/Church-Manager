@@ -1,3 +1,4 @@
+import itertools
 from django.core.paginator import Paginator
 from django.core.cache import cache
 import string, random, json
@@ -21,3 +22,8 @@ class CachingPaginator(Paginator):
     
 def create_ref_code():
     return ''.join(random.choices(string.ascii_lowercase + string.digits, k=5))
+
+def custom_sequence(digits=2):
+    digit_list = [string.digits]*digits
+    for j in itertools.product(*digit_list):
+        yield "".join(j)
