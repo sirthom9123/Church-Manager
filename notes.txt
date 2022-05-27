@@ -24,9 +24,12 @@ Partn_
 Investor_
 OnceOff_
 
+hggc.agrigrowfund.co.za/admin
+user: admin
+pass: TiHb@G?R8yp70
 
-TiHb@G?R8yp70
-
+To access after creating user with Group from admin
+hggc.agrigrowfund.co.za
 
 hggc_admin
 Password1234!$

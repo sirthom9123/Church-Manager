@@ -6,7 +6,10 @@
   <div class="login-center">
     <div class="navbar-header text-center mt-2 mb-4">
       <a href="/">
-        <img src="{% static 'img/Logo_web.png' %}" alt="logo" />
+        <img src="{% static 'img/hggc-logo.png' %}" alt="logo" />
+      </a>
+      <a href="/">
+        <img src="{% static 'img/Seraphim-logo.png' %}" alt="logo" />
       </a>
     </div>
     <!-- /.navbar-header -->
@@ -44,8 +47,8 @@
         <div class="col-md-12 d-flex">
           <div class="checkbox checkbox-primary mr-auto mr-0-rtl ml-auto-rtl">
             <label class="d-flex">
-              <input type="checkbox" />
-              <span class="label-text">Remember me</span>
+              {% comment %} <input type="checkbox" />
+              <span class="label-text">Remember me</span> {% endcomment %}
             </label>
           </div>
           <a
