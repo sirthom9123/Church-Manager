@@ -22643,6 +22643,9 @@ Custom Scroll
 .custom-scroll-content {
   height: 16.42857em; }
 
+.custom-table-scroll-content {
+  height: 35.42857em; }
+
 .left-scroll .ps.ps--active-x > .ps__scrollbar-x-rail, .left-scroll .ps.ps--active-y > .ps__scrollbar-y-rail {
   left: 0; }
 
