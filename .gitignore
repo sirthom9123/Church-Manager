@@ -60,6 +60,7 @@ cover/
 local_settings.py
 db.sqlite3
 db.sqlite3-journal
+*.sql
 
 # Flask stuff:
 instance/
@@ -105,13 +106,14 @@ celerybeat.pid
 *.sage.py
 
 # Environments
-# .env
-# .venv
+.env
+.venv
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
+.zip
 
 # Spyder project settings
 .spyderproject
