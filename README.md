@@ -1,4 +1,4 @@
-# HGGC Church Manager
+# Church Manager
 
 #### Framework
 Built with Django Architecture. 
